@@ -9,6 +9,7 @@ import javax.persistence.Id
 
 @Entity
 data class BolgDetail(
+        var headerImg: String = "",// 文章标题图片
         var title: String = "",// 文章标题
         var contents: String = "",// 文章内容
         var userId: String = "",// 文章作者id
@@ -31,6 +32,7 @@ data class BolgDetail(
 //CREATE TABLE `bolg_detail` (
 //`id` int(11) NOT NULL AUTO_INCREMENT,
 //`bolg_id` varchar(32) NOT NULL COMMENT '文章唯一id',
+//`header_img` varchar(255) NOT NULL COMMENT '文章标题图片',
 //`title` varchar(255) NOT NULL COMMENT '文章标题',
 //`contents` text NOT NULL COMMENT '文章内容',
 //`user_id` varchar(255) NOT NULL COMMENT '文章作者id',

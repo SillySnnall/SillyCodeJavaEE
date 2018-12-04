@@ -13,6 +13,7 @@ import com.silly.sillycode.util.*
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit4.SpringRunner
 import java.lang.Integer.parseInt
@@ -20,7 +21,9 @@ import java.util.*
 
 @RunWith(SpringRunner::class)
 @SpringBootTest
-class SillycodeApplicationTests {
+class SillycodeApplicationTests(
+
+) {
 
     @Autowired
     private lateinit var bolgDetailDao: BolgDetailDao
@@ -36,6 +39,8 @@ class SillycodeApplicationTests {
     @Autowired
     private lateinit var commentService: CommentService
 
+
+
     @Test
     fun contextLoads() {
 //        bolgDetailDao.save(BolgDetail("文绉绉","我是内容","78281542800848835", cdateTime(),1, cUUID()))
@@ -49,8 +54,9 @@ class SillycodeApplicationTests {
 //        val login = userService.login(User("test1", password = md5("test1")))
 //        println(login)
 
-        commentService.publishComment(Comment())
-        commentService.commentCount(Comment())
+//        commentService.publishComment(Comment())
+//        commentService.commentCount(Comment())
+
     }
 
 }

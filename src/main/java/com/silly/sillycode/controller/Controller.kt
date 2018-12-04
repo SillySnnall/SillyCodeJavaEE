@@ -3,14 +3,17 @@ package com.silly.sillycode.controller
 import com.silly.sillycode.entity.*
 import com.silly.sillycode.service.*
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.multipart.MultipartFile
 
 @RestController
 class Controller(
         private val userService: UserService,
         private val newsService: NewsService,
         private val bolgService: BolgService,
-        private val commentService: CommentService
+        private val commentService: CommentService,
+        private val updateService: UpdateService
 ) {
 
     /**
@@ -177,9 +180,43 @@ class Controller(
         return try {
             commentService.commentCount(fromComment)
         } catch (e: Exception) {
-            Data("回复评论失败", -1)
+            Data("获取评论数失败", -1)
         }
     }
 
+    /**
+     * 上传图片
+     */
+    @RequestMapping("/upload_img")
+    fun uploadImg(@RequestParam("img_file") file: MultipartFile): Data {
+        return try {
+            updateService.uploadImg(file)
+        } catch (e: Exception) {
+            Data("上传图片失败", -1)
+        }
+    }
 
+    /**
+     * 获取全部分类
+     */
+    @RequestMapping("/type_all")
+    fun typeAll(): Data {
+        return try {
+            bolgService.typeAll()
+        } catch (e: Exception) {
+            Data("获取分类失败", -1)
+        }
+    }
+
+    /**
+     * 添加分类
+     */
+    @RequestMapping("/add_type")
+    fun addType(fromType: Type): Data {
+        return try {
+            bolgService.addType(fromType)
+        } catch (e: Exception) {
+            Data("添加分类失败", -1)
+        }
+    }
 }
