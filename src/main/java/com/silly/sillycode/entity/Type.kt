@@ -9,8 +9,8 @@ import javax.persistence.Id
 
 @Entity
 data class Type(
-        var type_name: String = "",// 文章分类名字
-        var type: Int = 0,// 文章分类
+        var typeName: String = "",// 文章分类名字
+        var type: Int = 0,// 文章分类,代码自动生成
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         @JsonIgnore // 过滤json返回字段

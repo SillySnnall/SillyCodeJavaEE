@@ -2,22 +2,32 @@ package com.silly.sillycode
 
 import com.silly.sillycode.dao.BolgDetailDao
 import com.silly.sillycode.dao.CommentDao
+import com.silly.sillycode.dao.TypeDao
 import com.silly.sillycode.dao.UserDao
 import com.silly.sillycode.entity.BolgDetail
 import com.silly.sillycode.entity.Comment
+import com.silly.sillycode.entity.Type
 import com.silly.sillycode.entity.User
+import com.silly.sillycode.service.BolgService
 import com.silly.sillycode.service.CommentService
 import com.silly.sillycode.service.NewsService
 import com.silly.sillycode.service.UserService
 import com.silly.sillycode.util.*
+import org.jsoup.Jsoup
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.test.context.junit4.SpringRunner
+import java.io.File
 import java.lang.Integer.parseInt
 import java.util.*
+import javax.imageio.ImageIO
+import jdk.nashorn.tools.ShellFunctions.input
+
 
 @RunWith(SpringRunner::class)
 @SpringBootTest
@@ -39,6 +49,11 @@ class SillycodeApplicationTests(
     @Autowired
     private lateinit var commentService: CommentService
 
+    @Autowired
+    private lateinit var bolgService: BolgService
+
+    @Autowired
+    private lateinit var typeDao: TypeDao
 
 
     @Test
@@ -57,6 +72,15 @@ class SillycodeApplicationTests(
 //        commentService.publishComment(Comment())
 //        commentService.commentCount(Comment())
 
+
+//        bolgService.addType(Type("Android"))
+//        bolgService.addType(Type("ios"))
+//        bolgService.addType(Type("JavaEE"))
     }
 
+    @Value("\${update.file}")
+    private lateinit var updateFile: String
+
+    @Value("\${main.url}")
+    private lateinit var mainUrl: String
 }

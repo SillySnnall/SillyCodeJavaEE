@@ -2,9 +2,7 @@ package com.silly.sillycode.controller
 
 import com.silly.sillycode.entity.*
 import com.silly.sillycode.service.*
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 
 @RestController
@@ -20,7 +18,7 @@ class Controller(
      * 注册
      */
     @RequestMapping("/register")
-    fun register(formUser: User): Data {
+    fun register(@RequestBody formUser: User): Data {
         return try {
             userService.register(formUser)
         } catch (e: Exception) {
@@ -32,7 +30,7 @@ class Controller(
      * 登录
      */
     @RequestMapping("/login")
-    fun login(formUser: User): Data {
+    fun login(@RequestBody formUser: User): Data {
         return try {
             userService.login(formUser)
         } catch (e: Exception) {
@@ -44,7 +42,7 @@ class Controller(
      * 微信小程序登陆
      */
     @RequestMapping("/wx_code_login")
-    fun wxCodeLogin(formUser: User): Data {
+    fun wxCodeLogin(@RequestBody formUser: User): Data {
         return try {
             userService.wxCodeLogin(formUser)
         } catch (e: Exception) {
@@ -56,7 +54,7 @@ class Controller(
      * 更改用户名
      */
     @RequestMapping("/change_username")
-    fun changeUsername(formUser: User): Data {
+    fun changeUsername(@RequestBody formUser: User): Data {
         return try {
             userService.changeUsername(formUser)
         } catch (e: Exception) {
@@ -68,7 +66,7 @@ class Controller(
      * 更改密码
      */
     @RequestMapping("/change_password")
-    fun changePassword(formUser: User): Data {
+    fun changePassword(@RequestBody formUser: User): Data {
         return try {
             userService.changePassword(formUser)
         } catch (e: Exception) {
@@ -80,7 +78,7 @@ class Controller(
      * 获取新闻数据
      */
     @RequestMapping("/news")
-    fun news(fromPage: Page): Data {
+    fun news(@RequestBody fromPage: Page): Data {
         return try {
             newsService.newsList(fromPage)
         } catch (e: Exception) {
@@ -92,7 +90,7 @@ class Controller(
      * 获取新闻详情数据
      */
     @RequestMapping("/news_detail")
-    fun newsDetail(fromNewsDetail: NewsDetail): Data {
+    fun newsDetail(@RequestBody fromNewsDetail: NewsDetail): Data {
         return try {
             newsService.newsDetail(fromNewsDetail)
         } catch (e: Exception) {
@@ -104,9 +102,21 @@ class Controller(
      * 获取bolg数据
      */
     @RequestMapping("/bolg_data")
-    fun bolgData(fromPage: Page): Data {
+    fun bolgData(@RequestBody fromPage: Page): Data {
         return try {
             bolgService.bolgData(fromPage)
+        } catch (e: Exception) {
+            Data("博客数据异常", -1)
+        }
+    }
+
+    /**
+     * 通过bolgid获取博客
+     */
+    @RequestMapping("/bolg_one")
+    fun bolgOne(@RequestBody fromBolgDetail: BolgDetail): Data {
+        return try {
+            bolgService.bolgOne(fromBolgDetail)
         } catch (e: Exception) {
             Data("博客数据异常", -1)
         }
@@ -116,7 +126,7 @@ class Controller(
      * 发布bolg
      */
     @RequestMapping("/publish_bolg")
-    fun addBolg(fromBolgDetail: BolgDetail): Data {
+    fun addBolg(@RequestBody fromBolgDetail: BolgDetail): Data {
         return try {
             bolgService.publishBolg(fromBolgDetail)
         } catch (e: Exception) {
@@ -128,7 +138,7 @@ class Controller(
      * 获取评论
      */
     @RequestMapping("/comment")
-    fun comment(fromPage: Page, fromComment: Comment): Data {
+    fun comment(@RequestBody fromPage: Page, @RequestBody fromComment: Comment): Data {
         return try {
             commentService.comment(fromPage, fromComment)
         } catch (e: Exception) {
@@ -140,7 +150,7 @@ class Controller(
      * 获取评论中的回复
      */
     @RequestMapping("/reply")
-    fun reply(fromPage: Page, fromReplyComment: ReplyComment): Data {
+    fun reply(@RequestBody fromPage: Page, @RequestBody fromReplyComment: ReplyComment): Data {
         return try {
             commentService.reply(fromPage, fromReplyComment)
         } catch (e: Exception) {
@@ -152,7 +162,7 @@ class Controller(
      * 发布评论
      */
     @RequestMapping("/publish_comment")
-    fun publishComment(fromComment: Comment): Data {
+    fun publishComment(@RequestBody fromComment: Comment): Data {
         return try {
             commentService.publishComment(fromComment)
         } catch (e: Exception) {
@@ -164,7 +174,7 @@ class Controller(
      * 回复评论
      */
     @RequestMapping("/reply_comment")
-    fun replyComment(fromReplyComment: ReplyComment): Data {
+    fun replyComment(@RequestBody fromReplyComment: ReplyComment): Data {
         return try {
             commentService.replyComment(fromReplyComment)
         } catch (e: Exception) {
@@ -176,7 +186,7 @@ class Controller(
      * 博客评论数目
      */
     @RequestMapping("/comment_count")
-    fun commentCount(fromComment: Comment): Data {
+    fun commentCount(@RequestBody fromComment: Comment): Data {
         return try {
             commentService.commentCount(fromComment)
         } catch (e: Exception) {
@@ -212,7 +222,7 @@ class Controller(
      * 添加分类
      */
     @RequestMapping("/add_type")
-    fun addType(fromType: Type): Data {
+    fun addType(@RequestBody fromType: Type): Data {
         return try {
             bolgService.addType(fromType)
         } catch (e: Exception) {

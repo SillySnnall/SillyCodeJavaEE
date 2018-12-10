@@ -5,6 +5,10 @@ import java.util.*
 import java.io.IOException
 import org.springframework.web.multipart.MultipartFile
 import java.io.File
+import java.io.FileOutputStream
+import sun.misc.BASE64Decoder
+import java.io.BufferedOutputStream
+import javax.xml.bind.DatatypeConverter
 
 
 /**
@@ -58,7 +62,7 @@ fun upload(file: MultipartFile, path: String, fileName: String = ""): String {
         dest.mkdirs()
     }
     val fileNameN =
-            // 使用自动生成的文件名
+    // 使用自动生成的文件名
             if (fileName.isEmpty()) "${cTimeId()}${getSuffix(file.originalFilename ?: "")}"
             // 使用原文件名
             else fileName
@@ -86,4 +90,48 @@ fun upload(file: MultipartFile, path: String, fileName: String = ""): String {
  */
 fun getSuffix(fileName: String): String {
     return fileName.substring(fileName.lastIndexOf("."))
+}
+
+/**
+ * ase64字符串转化成图片
+ */
+fun GenerateImage(imgStr: String, outPath: String): String {
+    if (imgStr.isEmpty()) return ""
+    val strings = imgStr.split(",")
+    val extension: String
+    extension = when (strings[0]) {
+        //check image's extension
+        "data:image/jpeg;base64" -> "jpg"
+        "data:image/png;base64" -> "png"
+        else//should write cases for more images types
+        -> "jpg"
+    }
+    //convert base64 string to binary data
+    val data = DatatypeConverter.parseBase64Binary(strings[1])
+    val path = "$outPath/${cTimeId()}.$extension"
+    val file = File(path)
+    try {
+        val outputStream = BufferedOutputStream(FileOutputStream(file))
+        outputStream.write(data)
+        return path.substringAfterLast("/")
+    } catch (e: IOException) {
+        e.printStackTrace()
+    }
+    return ""
+}
+
+/**
+ * Base64加密
+ */
+fun encodeBase64(text: String): String {
+    if (text.isEmpty()) return ""
+    return Base64.getEncoder().encodeToString(text.toByteArray(charset("utf-8")))
+}
+
+/**
+ * Base64解密
+ */
+fun decoderBase64(text: String): String {
+    if (text.isEmpty()) return ""
+    return String(Base64.getDecoder().decode(text))
 }

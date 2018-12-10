@@ -22,7 +22,7 @@ data class BolgDetail(
         @JsonIgnore // 过滤json返回字段
         var id: Long? = null,
         // 非数据库字段
-        var commentCount: Int = 0 // 文章评论人数
+        var typeName: String = "" // 分类名
 ) {
     override fun toString(): String {
         return Gson().toJson(this)
