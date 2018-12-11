@@ -76,10 +76,11 @@ class SillycodeApplicationTests(
 //        bolgService.addType(Type("Android"))
 //        bolgService.addType(Type("ios"))
 //        bolgService.addType(Type("JavaEE"))
+
     }
 
-    @Value("\${update.file}")
-    private lateinit var updateFile: String
+    @Value("\${update.file.silly-temp}")
+    private lateinit var sillyTemp: String
 
     @Value("\${main.url}")
     private lateinit var mainUrl: String

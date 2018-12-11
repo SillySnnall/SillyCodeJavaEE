@@ -9,8 +9,8 @@ import org.springframework.web.multipart.MultipartFile
 
 @Service
 class UpdateService {
-    @Value("\${update.file}")
-    private lateinit var updateFile: String
+    @Value("\${update.file.silly-temp}")
+    private lateinit var sillyTemp: String
     @Value("\${main.url}")
     private lateinit var mainUrl: String
 
@@ -18,11 +18,8 @@ class UpdateService {
      * 上传图片
      */
     fun uploadImg(file: MultipartFile): Data {
-        // 要上传的目标文件存放路径
-        val localPath = "$updateFile/image"
-        // 上传成功或者失败的提示
-        val upload = upload(file, localPath)
+        val upload = upload(file, sillyTemp)
         if (upload.isEmpty()) return Data("上传失败", -1)
-        return Data("$mainUrl/image/$upload")
+        return Data("$mainUrl/sillyTemp/$upload")
     }
 }

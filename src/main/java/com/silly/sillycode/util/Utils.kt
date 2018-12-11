@@ -2,13 +2,14 @@ package com.silly.sillycode.util
 
 import org.apache.commons.codec.digest.DigestUtils
 import java.util.*
-import java.io.IOException
 import org.springframework.web.multipart.MultipartFile
-import java.io.File
-import java.io.FileOutputStream
 import sun.misc.BASE64Decoder
-import java.io.BufferedOutputStream
+import java.io.*
 import javax.xml.bind.DatatypeConverter
+import java.io.IOException
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.FileInputStream
 
 
 /**
@@ -49,7 +50,7 @@ fun cUsername(): String {
 }
 
 /**
- *
+ * 保存上传文件
  * @param file 文件
  * @param path 文件存放路径
  * @param fileName 源文件名，如果为空则使用原文件名
@@ -134,4 +135,97 @@ fun encodeBase64(text: String): String {
 fun decoderBase64(text: String): String {
     if (text.isEmpty()) return ""
     return String(Base64.getDecoder().decode(text))
+}
+
+/**
+ * 复制文件
+ */
+fun copyFile(inFile: String, outFile: String) {
+    val file1 = File(inFile)
+    val file2 = File(outFile)
+
+    val dest = File(outFile.replace("/${file2.name}", ""))
+    if (!dest.exists()) {
+        dest.mkdirs()
+    }
+    var fileOutputStream: FileOutputStream? = null
+    var inputStream: InputStream? = null
+    val bytes = ByteArray(1024)
+    var temp = 0
+    try {
+        inputStream = FileInputStream(file1)
+        fileOutputStream = FileOutputStream(file2)
+        while (temp != -1) {
+            fileOutputStream.write(bytes, 0, temp)
+            fileOutputStream.flush()
+            temp = inputStream.read(bytes)
+        }
+
+    } catch (e: FileNotFoundException) {
+        e.printStackTrace()
+    } catch (e: IOException) {
+        e.printStackTrace()
+    } finally {
+        if (inputStream != null) {
+            try {
+                inputStream.close()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+
+        }
+        if (fileOutputStream != null) {
+            try {
+                fileOutputStream.close()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+    }
+}
+
+/**
+ * 删除文件夹
+ */
+fun delFolder(folderPath: String) {
+    try {
+        delAllFile(folderPath) //删除完里面所有内容
+        val myFilePath = File(folderPath)
+        myFilePath.delete() //删除空文件夹
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+
+}
+
+/**
+ * 删除指定文件夹下所有文件
+ */
+fun delAllFile(path: String): Boolean {
+    var flag = false
+    val file = File(path)
+    if (!file.exists()) {
+        return flag
+    }
+    if (!file.isDirectory) {
+        return flag
+    }
+    val tempList = file.list()
+    var temp: File? = null
+    for (i in tempList.indices) {
+        if (path.endsWith(File.separator)) {
+            temp = File(path + tempList[i])
+        } else {
+            temp = File(path + File.separator + tempList[i])
+        }
+        if (temp.isFile) {
+            temp.delete()
+        }
+        if (temp.isDirectory) {
+            delAllFile(path + "/" + tempList[i])//先删除文件夹里面的文件
+            delFolder(path + "/" + tempList[i])//再删除空文件夹
+            flag = true
+        }
+    }
+    return flag
 }
