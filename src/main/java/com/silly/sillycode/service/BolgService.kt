@@ -33,10 +33,11 @@ class BolgService(
     /**
      * bolg全部数据
      */
-    fun bolgData(fromPage: Page): Data {
+    fun bolgData(fromPage: Page, fromBolgDetail: BolgDetail): Data {
         val sort = Sort(Sort.Direction.DESC, "cdateTime")
         val pageable = PageRequest.of(fromPage.page, fromPage.size, sort)
-        val datas = bolgDetailDao.findAll(pageable)
+        val datas = if (fromBolgDetail.type == 0) bolgDetailDao.findAll(pageable).content
+        else bolgDetailDao.findByType(fromBolgDetail.type, pageable)
         for (data in datas) {
             data.contents = decoderBase64(data.contents)
             data.typeName = typeDao.findByType(data.type)?.typeName ?: "未分类"
@@ -77,13 +78,7 @@ class BolgService(
         fromBolgDetail.headerImg = fromBolgDetail.headerImg.replace("/sillyTemp/", "/bolgImage/")
 
         // bolg contents 图片从临时文件夹复制到正式图片文件夹
-        val doc = Jsoup.parse(fromBolgDetail.contents)
-        val links = doc.getElementsByTag("img")
-        for (link in links) {
-            val imgName = File(link.attr("src")).name
-            copyFile("$sillyTemp/$imgName", "$bolgImage/$imgName")
-        }
-        fromBolgDetail.contents = fromBolgDetail.contents.replace("/sillyTemp/", "/bolgImage/")
+        fromBolgDetail.contents = bolgImgHandle(fromBolgDetail.contents)
 
         // bolg内容做Base64加密
         fromBolgDetail.contents = encodeBase64(fromBolgDetail.contents)
@@ -112,5 +107,31 @@ class BolgService(
         if (findAll.isEmpty()) fromType.type = 1 else fromType.type = (findAll[0].id ?: 0+1).toInt()
         typeDao.save(fromType)
         return Data("分类添加成功")
+    }
+
+    /**
+     * 博客内容中图片处理
+     */
+    private fun bolgImgHandle(content: String): String {
+        try {
+            val doc = Jsoup.parse(content)
+            val links = doc.getElementsByTag("img")
+            for (link in links) {
+                val src = link.attr("src")
+                val imgName = File(src).name
+                copyFile("$sillyTemp/$imgName", "$bolgImage/$imgName")
+                val newSrc = src.replace("/sillyTemp/", "/bolgImage/")
+                link.attr("src", newSrc)
+                link.attr("preview", "0")
+            }
+            val text = doc.toString().replace("\n", "").replace("<html>", "")
+                    .replace("</html>", "").replace("<head></head>", "")
+                    .replace("<body>", "").replace("</body>", "")
+                    .replace("  ", "").trim()
+            return text
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return ""
     }
 }
